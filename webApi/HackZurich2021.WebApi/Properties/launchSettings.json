@@ -3,8 +3,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:14539",
-      "sslPort": 44320
+      "applicationUrl": "http://localhost:36365",
+      "sslPort": 44354
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
@@ -32,7 +32,13 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "environmentVariables": {
+        "INFLUXDB_TOKEN": "ttuMmdrpfKZsEtI918Sb4gQkoVrg8olgdVpzQEyk1QRm9QfLXR6dHbvo73EL09xGs-zEox7P59voEWxtWdgo9Q==",
+        "INFLUXDB_ORGANIZATION": "HackZurich",
+        "INFLUXDB_BUCKET": "hackzurich",
+        "INFLUXDB_URL": "http://influxdb:8086"
+      }
     }
   }
 }
