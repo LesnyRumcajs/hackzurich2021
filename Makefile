@@ -7,7 +7,7 @@ build_simulator:
 
 # Generates configuration for the system to mount
 build_config:
-	cd compose && sh create_telegraf_config.sh
+	cd compose && bash create_telegraf_config.bash
 
 # Builds up the system
 compose_up: build_config
