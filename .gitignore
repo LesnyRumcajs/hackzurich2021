@@ -1,4 +1,6 @@
 static_data/
+/traffic_simulator/Cargo.lock
+/compose/telegraf.conf
 # compiled output
 /dist
 /tmp
