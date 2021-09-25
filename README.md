@@ -1,4 +1,6 @@
-# hackzurich2021
+# HackZurich2021 Siemens challenge
+
+![CI](https://github.com/LesnyRumcajs/hackzurich2021/workflows/CI/badge.svg)
 
 Put the extracted static CSV data to directory `static_data` (too large to upload here). It should look like this:
 ```
