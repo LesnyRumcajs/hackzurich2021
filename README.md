@@ -1,4 +1,4 @@
-# 🇨🇭 HackZurich2021 Siemens challenge 🚀
+# 🇨🇭 HackZurich2021 🚋 Siemens challenge 🚅
 
 ![CI](https://github.com/LesnyRumcajs/hackzurich2021/workflows/CI/badge.svg)
 
