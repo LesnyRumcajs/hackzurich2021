@@ -1,0 +1,110 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-warning card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">place</i>
+                        </div>
+                        <p class="card-category">Current Location</p>
+                        <h3 class="card-title">abc
+                        </h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons text-danger">warning</i>
+                            <a href="javascript:void(0)">Delay by 10 mins</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-success card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">train</i>
+                        </div>
+                        <p class="card-category">Status</p>
+                        <h3 class="card-title">Early</h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">date_range</i> Updated 10 mins ago
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">pin_drop</i>
+                        </div>
+                        <p class="card-category">Next Stop</p>
+                        <h3 class="card-title">DCR</h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">date_range</i> Updated 2 mins
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6">
+                <div class="card card-stats">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon">
+                            <i class="material-icons">filter_drama</i>
+                        </div>
+                        <p class="card-category">Weather</p>
+                        <h3 class="card-title">Rainy</h3>
+                    </div>
+                    <div class="card-footer">
+                        <div class="stats">
+                            <i class="material-icons">update</i> 2 seconds ago
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card card-chart">
+                <div class="card-header card-header-success">
+                    <div class="ct-chart" id="anomolyChart"></div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h4 class="card-title">Anomoly Detection</h4>
+                            <p class="card-category">Select a date range for detailed view</p>
+                        </div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                            <mat-form-field appearance="fill">
+                                <mat-label>Enter a date range</mat-label>
+                                <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+                                    <input matStartDate formControlName="start" placeholder="Start date">
+                                    <input matEndDate formControlName="end" placeholder="End date">
+                                </mat-date-range-input>
+                                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                <mat-date-range-picker #picker></mat-date-range-picker>
+
+                                <mat-error *ngIf="range.controls.start.hasError('matStartDateInvalid')">Invalid start
+                                    date
+                                </mat-error>
+                                <mat-error *ngIf="range.controls.end.hasError('matEndDateInvalid')">Invalid end date
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="stats">
+                        <i class="material-icons">access_time</i> updated 4 minutes ago
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
