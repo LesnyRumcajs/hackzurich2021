@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
+import time
 from sklearn.ensemble import IsolationForest
 
 from datetime import datetime
@@ -54,4 +55,6 @@ def main():
     result = anomaly(df)
     updateDataPoints(result)
 
-main()
+while True:
+    main()
+    time.sleep(10)

@@ -22,7 +22,12 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "INFLUXDB_TOKEN": "ttuMmdrpfKZsEtI918Sb4gQkoVrg8olgdVpzQEyk1QRm9QfLXR6dHbvo73EL09xGs-zEox7P59voEWxtWdgo9Q==",
+        "INFLUXDB_ORGANIZATION": "HackZurich",
+        "INFLUXDB_BUCKET": "hackzurich",
+        "INFLUXDB_URL": "http://localhost:8086",
+        "OPENWEATHER_APIKEY": "dcee66b299a1561a885b8949e12fb30f"
       },
       "dotnetRunMessages": "true",
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
