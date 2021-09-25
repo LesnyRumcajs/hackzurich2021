@@ -9,6 +9,12 @@ on:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
+    env:
+      INFLUX_USERNAME: ${{ secrets.INFLUX_USERNAME }}
+      INFLUX_PASSWORD: ${{ secrets.INFLUX_PASSWORD }}
+      INFLUX_BUCKET: ${{ secrets.INFLUX_BUCKET }}
+      INFLUX_ADMIN_TOKEN: ${{ secrets.INFLUX_ADMIN_TOKEN }}
+      INFLUX_ORG: ${{ secrets.INFLUX_ORG }}
     steps:
     - uses: actions/checkout@v2
     - name: Build Docker images
