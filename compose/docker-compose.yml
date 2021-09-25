@@ -79,6 +79,18 @@ services:
     networks:
       - iot
 
+  anomaly_analyze:
+    image: anomaly_analyze
+    restart: always
+    depends_on:
+      - influxdb
+    networks:
+      - iot
+    environment:
+      - INFLUXDB_ORGANIZATION=${INFLUX_ORG}
+      - INFLUXDB_BUCKET=${INFLUX_BUCKET}
+      - INFLUXDB_TOKEN=${INFLUX_ADMIN_TOKEN}
+
 networks:
   iot:
 
