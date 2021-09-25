@@ -1,0 +1,558 @@
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: agitated-euler-9eb005
+spec:
+    color: '#FF0000'
+    description: RSSI Value Range 0.9-1.2[V]
+    name: Weak
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: jolly-lichterman-9eb003
+spec:
+    color: '#326BBA'
+    description: RSSI Value Range 1.6-2.0[V]
+    name: Good
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: laughing-poitras-9eb001
+spec:
+    color: '#FFC000'
+    description: RSSI Value Range 1.2-1.6[V]
+    name: Fair
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Label
+metadata:
+    name: nervous-nash-5eb001
+spec:
+    color: '#00B050'
+    description: RSSI Value Range 2.0-2.9[V]
+    name: Excellent
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Bucket
+metadata:
+    name: dangerous-cerf-9eb007
+spec:
+    name: hackzurich
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: dangerous-swanson-1eb003
+spec:
+    every: 5s
+    name: A2 Valid Telegram/s
+    query: |-
+        from(bucket: "hackzurich")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["category"] == "telegram")
+          |> filter(fn: (r) => r["_measurement"] == "a2_telegram")
+          |> filter(fn: (r) => r["_field"] == "valid")
+          |> derivative(unit: 1s, nonNegative: false)
+          |> yield(name: "derivative")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    tags:
+      - key: a2_telegram
+        value: status
+    thresholds:
+      - level: OK
+        type: greater
+        value: 4
+      - level: WARN
+        max: 4
+        min: 2
+        type: inside_range
+      - level: CRIT
+        type: lesser
+        value: 2
+      - level: INFO
+        max: 4
+        min: 4
+        type: inside_range
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: lucid-hugle-1eb001
+spec:
+    every: 5s
+    name: A2 Total Telegram/s
+    query: |-
+        from(bucket: "hackzurich")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["category"] == "telegram")
+          |> filter(fn: (r) => r["_measurement"] == "a2_telegram")
+          |> filter(fn: (r) => r["_field"] == "total")
+          |> derivative(unit: 1s, nonNegative: false)
+          |> yield(name: "derivative")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    tags:
+      - key: a2_telegram
+        value: status
+    thresholds:
+      - level: OK
+        type: greater
+        value: 4
+      - level: WARN
+        max: 4
+        min: 2
+        type: inside_range
+      - level: CRIT
+        type: lesser
+        value: 2
+      - level: INFO
+        max: 4
+        min: 4
+        type: inside_range
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: ridiculous-ellis-deb002
+spec:
+    every: 5s
+    name: A1 Valid Telegram/s
+    query: |-
+        from(bucket: "hackzurich")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["category"] == "telegram")
+          |> filter(fn: (r) => r["_measurement"] == "a1_telegram")
+          |> filter(fn: (r) => r["_field"] == "valid")
+          |> derivative(unit: 1s, nonNegative: false)
+          |> yield(name: "derivative")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    tags:
+      - key: a1_telegram
+        value: status
+    thresholds:
+      - level: OK
+        type: greater
+        value: 4
+      - level: WARN
+        max: 4
+        min: 2
+        type: inside_range
+      - level: CRIT
+        type: lesser
+        value: 2
+      - level: INFO
+        max: 4
+        min: 4
+        type: inside_range
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: stubborn-jemison-5eb001
+spec:
+    every: 1s
+    name: RSSI Quality
+    query: |-
+        from(bucket: "hackzurich")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["_measurement"] == "a2_rssi")
+          |> filter(fn: (r) => r["_field"] == "signalStrength")
+          |> aggregateWindow(every: 1m, fn: last, createEmpty: false)
+          |> yield(name: "last")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    tags:
+      - key: rssi
+        value: status
+    thresholds:
+      - level: OK
+        max: 2.9
+        min: 2
+        type: inside_range
+      - level: INFO
+        max: 2
+        min: 1.6
+        type: inside_range
+      - level: WARN
+        max: 1.6
+        min: 1.2
+        type: inside_range
+      - level: CRIT
+        max: 1.2
+        min: 0.9
+        type: inside_range
+---
+apiVersion: influxdata.com/v2alpha1
+kind: CheckThreshold
+metadata:
+    name: wonderful-einstein-deb000
+spec:
+    every: 5s
+    name: A1 Total Telegram/s
+    query: |-
+        from(bucket: "hackzurich")
+          |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+          |> filter(fn: (r) => r["category"] == "telegram")
+          |> filter(fn: (r) => r["_measurement"] == "a1_telegram")
+          |> filter(fn: (r) => r["_field"] == "total")
+          |> derivative(unit: 1s, nonNegative: false)
+          |> yield(name: "derivative")
+    status: active
+    statusMessageTemplate: 'Check: ${ r._check_name } is: ${ r._level }'
+    tags:
+      - key: a1_telegram
+        value: status
+    thresholds:
+      - level: OK
+        type: greater
+        value: 4
+      - level: WARN
+        max: 4
+        min: 2
+        type: inside_range
+      - level: CRIT
+        type: lesser
+        value: 2
+      - level: INFO
+        max: 4
+        min: 4
+        type: inside_range
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationEndpointSlack
+metadata:
+    name: gallant-mirzakhani-5eb003
+spec:
+    name: '[Slack] Notification Channel'
+    status: active
+    url: https://hooks.slack.com/services/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
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: awesome-benz-5eb005
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        RSSI Quality changed to: EXCELLENT
+    name: '[Slack] RSSI Status OK'
+    statusRules:
+      - currentLevel: OK
+        previousLevel: ANY
+    tagRules:
+      - key: rssi
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: condescending-pare-deb001
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        A1 Telegram Status changed to: OK
+    name: '[Slack] A1 Telegram Status OK'
+    statusRules:
+      - currentLevel: INFO
+        previousLevel: ANY
+    tagRules:
+      - key: a1_telegram
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: determined-gauss-1eb001
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        A2 Telegram Status changed to: GOOD
+    name: '[Slack] A2 Telegram Status GOOD'
+    statusRules:
+      - currentLevel: OK
+        previousLevel: ANY
+    tagRules:
+      - key: a2_telegram
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: elegant-robinson-5eb007
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        RSSI Quality changed to: FAIR
+    name: '[Slack] RSSI Status WARN'
+    statusRules:
+      - currentLevel: WARN
+        previousLevel: ANY
+    tagRules:
+      - key: rssi
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: fasting-bhaskara-5eb001
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        RSSI Quality changed to: WEAK
+    name: '[Slack] RSSI Status CRIT'
+    statusRules:
+      - currentLevel: CRIT
+        previousLevel: ANY
+    tagRules:
+      - key: rssi
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: fervent-carson-deb005
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        A2 Telegram Status changed to: CRITICAL
+    name: '[Slack] A2 Telegram Status CRIT'
+    statusRules:
+      - currentLevel: CRIT
+        previousLevel: ANY
+    tagRules:
+      - key: a2_telegram
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: frosty-shockley-5eb003
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        RSSI Quality changed to: GOOD
+    name: '[Slack] RSSI Status INFO'
+    statusRules:
+      - currentLevel: INFO
+        previousLevel: ANY
+    tagRules:
+      - key: rssi
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: gifted-ganguly-1eb003
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        A2 Telegram Status changed to: WARN
+    name: '[Slack] A2 Telegram Status WARN'
+    statusRules:
+      - currentLevel: WARN
+        previousLevel: ANY
+    tagRules:
+      - key: a2_telegram
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: hungry-chatelet-9eb001
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        A1 Telegram Status changed to: CRITICAL
+    name: '[Slack] A1 Telegram Status CRIT'
+    statusRules:
+      - currentLevel: CRIT
+        previousLevel: ANY
+    tagRules:
+      - key: a1_telegram
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: mystifying-pare-deb003
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        A1 Telegram Status changed to: WARN
+    name: '[Slack] A1 Telegram Status WARN'
+    statusRules:
+      - currentLevel: WARN
+        previousLevel: ANY
+    tagRules:
+      - key: a1_telegram
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: NotificationRule
+metadata:
+    name: rusty-ritchie-9eb003
+spec:
+    endpointName: gallant-mirzakhani-5eb003
+    every: 5s
+    messageTemplate: |-
+        ${r._time}
+        A1 Telegram Status changed to: GOOD
+    name: '[Slack] A1 Telegram Status GOOD'
+    statusRules:
+      - currentLevel: OK
+        previousLevel: ANY
+    tagRules:
+      - key: a1_telegram
+        operator: equal
+        value: status
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Variable
+metadata:
+    name: kind-allen-9eb001
+spec:
+    language: flux
+    name: bucket
+    query: "buckets()\r\n  |> filter(fn: (r) => r.name !~ /^_/)\r\n  |> rename(columns:
+        {name: \"_value\"})\r\n  |> keep(columns: [\"_value\"])"
+    type: query
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: jovial-brattain-deb001
+spec:
+    charts:
+      - axes:
+          - base: "10"
+            name: x
+            scale: linear
+          - base: "10"
+            name: "y"
+            scale: linear
+        colors:
+          - hex: '#31C0F6'
+            id: ce619d91-f60a-4ce9-b1b2-b8fe1b34112a
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#A500A5'
+            id: 00779475-dd7b-4a93-a3ae-6eb9ebeace8a
+            name: Nineteen Eighty Four
+            type: scale
+          - hex: '#FF7E27'
+            id: 85e685ed-21bd-4b7e-a385-680a2405893e
+            name: Nineteen Eighty Four
+            type: scale
+        geom: line
+        height: 4
+        hoverDimension: auto
+        kind: Xy
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: A2 RSSI
+        position: overlaid
+        queries:
+          - query: |-
+                from(bucket: "hackzurich")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "a2_rssi")
+                  |> filter(fn: (r) => r["_field"] == "signalStrength")
+                  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)
+                  |> yield(name: "mean")
+        width: 12
+        xCol: _time
+        yCol: _value
+      - axes:
+          - name: x
+          - name: "y"
+        colors:
+          - hex: '#31C0F6'
+          - hex: '#BC00B8'
+          - hex: '#FF7E27'
+        height: 4
+        kind: Scatter
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: A1 Telegram/s
+        queries:
+          - query: |-
+                from(bucket: "hackzurich")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "a1_telegram")
+                  |> filter(fn: (r) => r["_field"] == "total" or r["_field"] == "valid")
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 4
+      - axes:
+          - name: x
+          - name: "y"
+        colors:
+          - hex: '#31C0F6'
+          - hex: '#BC00B8'
+          - hex: '#FF7E27'
+        height: 4
+        kind: Scatter
+        legendColorizeRows: true
+        legendOpacity: 1
+        legendOrientationThreshold: 1e+08
+        name: A2 Telegram/s
+        queries:
+          - query: |-
+                from(bucket: "hackzurich")
+                  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
+                  |> filter(fn: (r) => r["_measurement"] == "a2_telegram")
+                  |> filter(fn: (r) => r["_field"] == "total" or r["_field"] == "valid")
+                  |> derivative(unit: 1s, nonNegative: false)
+                  |> yield(name: "derivative")
+        width: 12
+        xCol: _time
+        yCol: _value
+        yPos: 8
+    name: HackZurich
+---
+apiVersion: influxdata.com/v2alpha1
+kind: Dashboard
+metadata:
+    name: sharp-albattani-1eb001
+spec:
+    charts: []
+    name: Name this Dashboard

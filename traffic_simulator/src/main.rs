@@ -30,7 +30,7 @@ fn main() {
     let cli = create_mqtt_client(&config);
 
     if let Ok(lines) = read_lines(config.rssi_data) {
-        for (count, line) in lines.enumerate() {
+        for (count, line) in lines.enumerate().skip(1) {
             if config.entry_limit != 0 && count as u32 >= config.entry_limit {
                 break;
             }
