@@ -49,3 +49,5 @@ Thumbs.db
 /hz-siemens-fe/.vscode/
 /hz-siemens-fe/package-lock.json
 /hz-siemens-fe/node_modules/
+webApi/HackZurich2021.WebApi/bin/
+webApi/HackZurich2021.WebApi/obj/
