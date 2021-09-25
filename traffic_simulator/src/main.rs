@@ -1,7 +1,9 @@
+use log::{error, info};
+use paho_mqtt::Client;
 use std::fs::File;
 use std::io::BufRead;
 use std::path::{Path, PathBuf};
-use std::time::Duration;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use std::{io, process, time};
 use structopt::StructOpt;
 
@@ -23,15 +25,36 @@ struct Config {
 
 fn main() {
     let config = Config::from_args();
+    env_logger::init();
 
+    let cli = create_mqtt_client(&config);
+
+    if let Ok(lines) = read_lines(config.rssi_data) {
+        for (count, line) in lines.enumerate() {
+            if config.entry_limit != 0 && count as u32 >= config.entry_limit {
+                break;
+            }
+            if let Ok(line) = line {
+                for datapoint in format_data(line) {
+                    publish_data(&config.rssi_topic_name, &cli, datapoint)
+                }
+            }
+            std::thread::sleep(time::Duration::from_millis(config.sleep_period_ms.into()));
+        }
+    }
+
+    cli.disconnect(None).unwrap();
+}
+
+fn create_mqtt_client(config: &Config) -> Client {
     // configure mqtt client
     let mqtt_opts = paho_mqtt::CreateOptionsBuilder::new()
-        .server_uri(config.broker)
-        .client_id(config.client_id)
+        .server_uri(&config.broker)
+        .client_id(&config.client_id)
         .finalize();
 
     let cli = paho_mqtt::Client::new(mqtt_opts).unwrap_or_else(|err| {
-        println!("Error creating the client: {:?}", err);
+        error!("Error creating the client: {:?}", err);
         process::exit(1);
     });
 
@@ -43,36 +66,52 @@ fn main() {
 
     // Connect and wait for it to complete or fail.
     if let Err(e) = cli.connect(conn_opts) {
-        println!("Unable to connect:\n\t{:?}", e);
+        error!("Unable to connect:\n\t{:?}", e);
         process::exit(1);
     }
-    if let Ok(lines) = read_lines(config.rssi_data) {
-        for (count, line) in lines.enumerate() {
-            if config.entry_limit != 0 && count as u32 >= config.entry_limit {
-                break;
-            }
-            if let Ok(line) = line {
-                let split = line.split(',').collect::<Vec<_>>();
-                let datapoint = format!(
-                    "rssi_data datetime={} positionnoleap={} lat={} long={} a1_total={} a1_valid={} a2_rssi={} a2_total={} a2_valid={}",
-                    split[1], split[5], split[6], split[7], split[8], split[9], split[10], split[11], split[12]
-                );
+    cli
+}
 
-                println!("{}", datapoint);
-                let msg = paho_mqtt::MessageBuilder::new()
-                    .topic(&config.rssi_topic_name)
-                    .payload(datapoint)
-                    .qos(0)
-                    .finalize();
-                if let Err(e) = cli.publish(msg) {
-                    println!("Error sending message! {:?}", e);
-                }
-            }
-            std::thread::sleep(time::Duration::from_millis(config.sleep_period_ms.into()));
-        }
+fn format_data(line: String) -> Vec<String> {
+    let split = line.split(',').collect::<Vec<_>>();
+    let timestamp = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards!")
+        .as_nanos();
+    let datapoints = vec![
+        format!(
+            "a1_telegram,category=telegram total={}i valid={}i {}",
+            split[8], split[9], timestamp),
+        format!(
+            "a2_telegram,category=telegram total={}i valid={}i {}",
+            split[11], split[12], timestamp
+        ),
+        format!(
+            "a2_rssi,category=rssi signalStrength={} {}",
+            split[10], timestamp
+        ),
+        format!(
+            "position,category=position areaNumber={}i latitude={} longitude={} position={}i positionNoLeap={}i {}",
+            split[2], split[6], split[7], split[4], split[5], timestamp
+        ),
+        format!(
+            "identification,category=identification recordId={}i, track={}i {}",
+            split[0], split[3], timestamp
+        )
+    ];
+    datapoints
+}
+
+fn publish_data(topic: &str, cli: &Client, datapoint: String) {
+    info!("{}", datapoint);
+    let msg = paho_mqtt::MessageBuilder::new()
+        .topic(topic)
+        .payload(datapoint)
+        .qos(0)
+        .finalize();
+    if let Err(e) = cli.publish(msg) {
+        error!("Error sending message! {:?}", e);
     }
-
-    cli.disconnect(None).unwrap();
 }
 
 fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>

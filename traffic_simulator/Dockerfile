@@ -7,4 +7,5 @@ COPY . /app
 
 RUN cargo build --release
 
+ENV RUST_LOG=info
 CMD cargo run --release 
