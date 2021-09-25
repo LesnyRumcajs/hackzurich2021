@@ -1,4 +1,4 @@
-#!/bin/env sh
+#!/bin/env bash
 
 if [[ -z "${INFLUX_ADMIN_TOKEN}" ]]; then
   echo "You need to set the INFLUX_ADMIN_TOKEN."
