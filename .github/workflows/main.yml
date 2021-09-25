@@ -7,9 +7,15 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  pipeline:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Build Docker images
       run: make build
+    - name: Bring the system up
+      run: make compose_up
+    - name: Feed some traffic into the system
+      run: make run_simulator
+    - name: Cleanup
+      run: make compose_down clean
