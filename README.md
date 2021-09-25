@@ -11,7 +11,6 @@ disruptions.csv  events.csv  Mapping_Events_Disruptions.csv  rssi.csv  velocitie
 Build the traffic generator:
 ```
 make build
-
 ```
 
 Run the traffic generator:
