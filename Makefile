@@ -1,3 +1,5 @@
+build: build_simulator build_config
+
 build_simulator:
 	cd traffic_simulator && docker build -t traffic_simulator .
 
