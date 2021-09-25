@@ -80,10 +80,10 @@ fn format_data(line: String) -> Vec<String> {
         .as_nanos();
     let datapoints = vec![
         format!(
-            "a1_telegram,category=telegram total={}i valid={}i {}",
+            "a1_telegram,category=telegram total={}i,valid={}i {}",
             split[8], split[9], timestamp),
         format!(
-            "a2_telegram,category=telegram total={}i valid={}i {}",
+            "a2_telegram,category=telegram total={}i,valid={}i {}",
             split[11], split[12], timestamp
         ),
         format!(
@@ -91,11 +91,11 @@ fn format_data(line: String) -> Vec<String> {
             split[10], timestamp
         ),
         format!(
-            "position,category=position areaNumber={}i latitude={} longitude={} position={}i positionNoLeap={}i {}",
+            "position,category=position areaNumber={}i,latitude={},longitude={},position={}i,positionNoLeap={}i {}",
             split[2], split[6], split[7], split[4], split[5], timestamp
         ),
         format!(
-            "identification,category=identification recordId={}i, track={}i {}",
+            "identification,category=identification recordId={}i,track={}i {}",
             split[0], split[3], timestamp
         )
     ];
