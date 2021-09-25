@@ -1,16 +1,16 @@
 #!/bin/env sh
 
-if [[ -z "${INFLUX_ADMIN_TOKEN}" ]]; then
+if [ -z "${INFLUX_ADMIN_TOKEN}" ]; then
   echo "You need to set the INFLUX_ADMIN_TOKEN."
   exit 1
 fi
 
-if [[ -z "${INFLUX_BUCKET}" ]]; then
+if [ -z "${INFLUX_BUCKET}" ]; then
   echo "You need to set the INFLUX_BUCKET."
   exit 1
 fi
 
-if [[ -z "${INFLUX_ORG}" ]]; then
+if [ -z "${INFLUX_ORG}" ]; then
   echo "You need to set the INFLUX_ORG."
   exit 1
 fi
