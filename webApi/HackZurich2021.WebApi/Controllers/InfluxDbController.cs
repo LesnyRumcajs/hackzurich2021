@@ -6,9 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 
 namespace HackZurich2021.WebApi.Controllers
@@ -98,10 +96,13 @@ namespace HackZurich2021.WebApi.Controllers
         {
             SetCulture();
 
-            using (var r = new StreamReader(@".\influxDbSettings.json"))
+            _settings = new InfluxDbSettings()
             {
-                _settings = JsonSerializer.Deserialize<InfluxDbSettings>(r.ReadToEnd());
-            }
+                Bucket = Environment.GetEnvironmentVariable("INFLUXDB_BUCKET"),
+                Organization = Environment.GetEnvironmentVariable("INFLUXDB_ORGANIZATION"),
+                Token = Environment.GetEnvironmentVariable("INFLUXDB_TOKEN"),
+                Url = Environment.GetEnvironmentVariable("INFLUXDB_URL")
+            };
 
             _client = InfluxDBClientFactory.Create(_settings.Url, _settings.Token.ToCharArray());
         }
