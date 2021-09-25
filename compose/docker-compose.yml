@@ -53,6 +53,16 @@ services:
     depends_on:
       - influxdb
 
+  frontend:
+    image: hz-siemens-fe
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - influxdb
+    networks:
+      - iot
+
 networks:
   iot:
 

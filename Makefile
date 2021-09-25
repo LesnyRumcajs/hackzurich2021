@@ -1,9 +1,12 @@
 # Builds the entire platform
-build: build_simulator build_config
+build: build_simulator build_frontend build_config
 
 # Builds the traffic simulator
 build_simulator:
 	cd traffic_simulator && docker build -t traffic_simulator .
+
+build_frontend:
+	cd hz-siemens-fe && docker build -t hz-siemens-fe .
 
 # Generates configuration for the system to mount
 build_config:
