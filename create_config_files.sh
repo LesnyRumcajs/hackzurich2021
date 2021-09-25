@@ -15,7 +15,8 @@ if [ -z "${INFLUX_ORG}" ]; then
   exit 1
 fi
 
-cat <<EOF >telegraf.conf
+echo "Creating the telegraf configuration file..."
+cat <<EOF >compose/telegraf.conf
 [[outputs.influxdb_v2]]
   urls = ["http://influxdb:8086"]
   token = "$INFLUX_ADMIN_TOKEN"
@@ -31,3 +32,4 @@ cat <<EOF >telegraf.conf
     "rssi_topic/#"
   ]
 EOF
+echo "Done."

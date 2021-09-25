@@ -8,9 +8,12 @@ build_simulator:
 build_frontend:
 	cd hz-siemens-fe && docker build -t hz-siemens-fe .
 
+build_webapi:
+		cd webApi && docker build -t webapi -f HackZurich2021.WebApi/Dockerfile .
+
 # Generates configuration for the system to mount
 build_config:
-	cd compose && sh create_telegraf_config.sh
+	sh create_config_files.sh
 
 # Builds up the system
 compose_up: build_config
