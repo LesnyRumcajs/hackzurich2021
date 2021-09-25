@@ -1,0 +1,6 @@
+pandas
+numpy
+sklearn
+influxdb
+influxdb_client
+matplotlib
