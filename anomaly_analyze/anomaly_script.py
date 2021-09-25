@@ -15,7 +15,7 @@ warnings.filterwarnings("ignore")
 token      = os.environ.get("INFLUXDB_TOKEN")
 org        = os.environ.get("INFLUXDB_ORGANIZATION")
 bucket     = os.environ.get("INFLUXDB_BUCKET")
-client = InfluxDBClient(url="http://localhost:8086", token=token)
+client = InfluxDBClient(url="http://influxdb:8086", token=token)
 
 measurement = 'a2_rssi'
 field = 'signalStrength'
