@@ -1,5 +1,5 @@
 # Builds the entire platform
-build: build_simulator build_frontend build_config
+build: build_simulator build_frontend build_webapi build_config
 
 # Builds the traffic simulator
 build_simulator:
