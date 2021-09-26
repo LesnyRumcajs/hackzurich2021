@@ -1,5 +1,5 @@
 # Builds the entire platform
-build: build_simulator build_frontend build_config
+build: build_simulator build_frontend build_webapi build_anomaly_analyzer build_config
 
 # Builds the traffic simulator
 build_simulator:
@@ -8,9 +8,15 @@ build_simulator:
 build_frontend:
 	cd hz-siemens-fe && docker build -t hz-siemens-fe .
 
+build_webapi:
+		cd webApi && docker build -t webapi -f HackZurich2021.WebApi/Dockerfile .
+
+build_anomaly_analyzer:
+	cd anomaly_analyze && docker build -t anomaly_analyze .
+
 # Generates configuration for the system to mount
 build_config:
-	cd compose && sh create_telegraf_config.sh
+	sh create_config_files.sh
 
 # Builds up the system
 compose_up: build_config
@@ -31,4 +37,5 @@ run_simulator:
 # Removes temporary assets
 clean:
 	rm compose/telegraf.conf
+
 

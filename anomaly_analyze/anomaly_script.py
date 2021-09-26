@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 import warnings
+import os
 import time
 from sklearn.ensemble import IsolationForest
 
@@ -11,10 +12,10 @@ from influxdb_client.client.write_api import SYNCHRONOUS
 
 warnings.filterwarnings("ignore")
 
-token = "e-za4dDVDrQAe8g378qovfTvuLZYHZ_VwTwihauVZlrFj6tlVh9QreqmUH5q2_wxqO1k_vjfzR7-vvoNXeN5vA=="
-org = "HackZurich"
-bucket = "hackzurich"
-client = InfluxDBClient(url="http://localhost:8086", token=token)
+token      = os.environ.get("INFLUXDB_TOKEN")
+org        = os.environ.get("INFLUXDB_ORGANIZATION")
+bucket     = os.environ.get("INFLUXDB_BUCKET")
+client = InfluxDBClient(url="http://influxdb:8086", token=token)
 
 measurement = 'a2_rssi'
 field = 'signalStrength'
