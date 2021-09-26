@@ -1,5 +1,5 @@
 # Builds the entire platform
-build: build_simulator build_frontend build_webapi build_anomaly_analyzer build_config
+build: build_simulator build_frontend build_webapi build_anomaly_analyzer build_disruption_prediction build_config
 
 # Builds the traffic simulator
 build_simulator:
@@ -13,6 +13,9 @@ build_webapi:
 
 build_anomaly_analyzer:
 	cd anomaly_analyze && docker build -t anomaly_analyze .
+
+build_disruption_prediction:
+	cd disruption_prediction && docker build -t disruption_prediction .
 
 # Generates configuration for the system to mount
 build_config:
