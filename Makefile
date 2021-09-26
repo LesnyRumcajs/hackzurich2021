@@ -26,7 +26,7 @@ compose_up: build_config
 	cd compose && \
 		docker-compose up -d && \
 		echo "Applying template..." && \
-		sleep 30 && \
+		sleep 45 && \
 		docker exec compose_influxdb_1 /usr/local/bin/influx apply --org=HackZurich -f /var/opt/influxdb_template --quiet --force=true
 
 # Tears down the system
