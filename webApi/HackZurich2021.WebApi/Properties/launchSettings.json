@@ -23,7 +23,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "INFLUXDB_TOKEN": "ttuMmdrpfKZsEtI918Sb4gQkoVrg8olgdVpzQEyk1QRm9QfLXR6dHbvo73EL09xGs-zEox7P59voEWxtWdgo9Q==",
+        "INFLUXDB_TOKEN": "Ho_Cygaf5rghbFOwyIlbqpmPfblRo4hCeA3AEmo4tcaKJRfsGTP04oh3Fr--kg_wZ9kXE3vwGcQGxOrMh-8wMQ==",
         "INFLUXDB_ORGANIZATION": "HackZurich",
         "INFLUXDB_BUCKET": "hackzurich",
         "INFLUXDB_URL": "http://localhost:8086",
@@ -39,7 +39,7 @@
       "publishAllPorts": true,
       "useSSL": true,
       "environmentVariables": {
-        "INFLUXDB_TOKEN": "ttuMmdrpfKZsEtI918Sb4gQkoVrg8olgdVpzQEyk1QRm9QfLXR6dHbvo73EL09xGs-zEox7P59voEWxtWdgo9Q==",
+        "INFLUXDB_TOKEN": "Ho_Cygaf5rghbFOwyIlbqpmPfblRo4hCeA3AEmo4tcaKJRfsGTP04oh3Fr--kg_wZ9kXE3vwGcQGxOrMh-8wMQ==",
         "INFLUXDB_ORGANIZATION": "HackZurich",
         "INFLUXDB_BUCKET": "hackzurich",
         "INFLUXDB_URL": "http://influxdb:8086"

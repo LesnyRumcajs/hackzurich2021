@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace HackZurich2021.WebApi.Model.Weather
 {
-    public class CurrentWeatherData
+    public class CurrentWeatherData : IWeatherData
     {
         [JsonPropertyName("clouds")]
         public int Clouds { get; set; }

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
@@ -37,8 +38,9 @@ namespace HackZurich2021.WebApi.Controllers
 
         [HttpPost]
         [Route(nameof(CreateAnomalyEvaluation))]
-        public string CreateAnomalyEvaluation(DateTime anomalyTimestamp, int timelapse = 60, int signalLimit = 10, int badTelegramThreshold = 2, int warningTelegramThreshold = 4)
+        public List<string> CreateAnomalyEvaluation(DateTime anomalyTimestamp, int timelapse = 10, int signalLimit = 1, int badTelegramThreshold = 2, int warningTelegramThreshold = 4)
         {
+            var results = new List<string>();
             SetCulture();
 
             var start = anomalyTimestamp.Subtract(new TimeSpan(0, 0, timelapse));
@@ -56,15 +58,33 @@ namespace HackZurich2021.WebApi.Controllers
             if (badSignals.Count > signalLimit
                 || warningSignals.Count > signalLimit)
             {
-                var correlationResult = CorrelateSignalStrengthAndTelegrams(dataSet, badSignals, warningSignals, signalLimit, badTelegramThreshold, warningTelegramThreshold, out ErrorCategories result);
-                var weatherResult = AnalyzeWeatherConditions(badSignals.Count > 0 ? badSignals.FirstOrDefault() : warningSignals.FirstOrDefault());
+                var correlations = CorrelateSignalStrengthAndTelegrams(dataSet, badSignals, warningSignals, signalLimit, badTelegramThreshold, warningTelegramThreshold, out ErrorCategories result);
+                if (result != ErrorCategories.OK)
+                {
+                    foreach (var correlation in correlations)
+                    {
+                        results.Add($"{result} - {correlation.Key} - {correlation.Value.Print()}");
+                    }
+                }
+                results.AddRange(AnalyzeWeatherConditions(badSignals.Count > 0 ? badSignals.FirstOrDefault() : warningSignals.FirstOrDefault()));
             }
 
-            // Correlate RSSI and telegram data Get weather data at given timestamp and correlate
-            // data Write evaluation result back to database → categorize into 'broken loop antenna'
-            // (rssi and telegram out of line), 'interference' (loss of telegrams) and 'weather'
+            return results;
+        }
 
-            return "evaluationResult";
+        [HttpPost]
+        [Route(nameof(CreateAnomalyEvaluationFromAlert))]
+        public List<string> CreateAnomalyEvaluationFromAlert()
+        {
+            using (var r = new StreamReader(Request.Body))
+            {
+                if (DateTime.TryParse(r.ReadToEnd(), out DateTime timestamp))
+                {
+                    return CreateAnomalyEvaluation(timestamp);
+                }
+            }
+
+            return new List<string>() { "Invalid timestamp" };
         }
 
         private readonly HttpClient _httpClient = new();
@@ -74,17 +94,54 @@ namespace HackZurich2021.WebApi.Controllers
 
         private InfluxDbSettings _settings;
 
-        private string AnalyzeWeatherConditions(FullDataSet dataSet)
+        private List<string> AnalyzeWeatherConditions(FullDataSet dataSet)
         {
+            var results = new List<string>();
+
             var apiKey = Environment.GetEnvironmentVariable("OPENWEATHER_APIKEY");
             var unixTicks = ((DateTimeOffset)dataSet.Timestamp).ToUnixTimeSeconds();
 
             var response = _httpClient.GetAsync($@"https://api.openweathermap.org/data/2.5/onecall/timemachine?dt={unixTicks}&appid={apiKey}&lat={dataSet.PositionData.Latitude}&lon={dataSet.PositionData.Longitude}").Result;
             var weatherData = JsonSerializer.Deserialize<WeatherData>(response.Content.ReadAsStringAsync().Result);
 
-            // Temperature below dew point? High humidity? High Wind speed?
+            IWeatherData selectedWeatherData;
+            if (weatherData.CurrentWeatherData.Timestamp > dataSet.Timestamp.Value.AddHours(1))
+            {
+                selectedWeatherData = weatherData.HourlyWeatherData.FirstOrDefault(wd => wd.Timestamp < dataSet.Timestamp.Value.AddHours(1));
+            }
+            else
+            {
+                selectedWeatherData = weatherData.CurrentWeatherData;
+            }
 
-            return "OK";
+            var temperature = ConvertFahrenheitToCelsius(selectedWeatherData.Temperature);
+            var dewPoint = ConvertFahrenheitToCelsius(selectedWeatherData.DewPoint);
+            if (temperature <= dewPoint)
+            {
+                results.Add($"Temperature was below or equal to dew point ({temperature}°C <= {dewPoint}°C)");
+            }
+
+            if (temperature <= 4)
+            {
+                results.Add($"Temperature was below freezing point ({temperature}°C <= 4°C)");
+            }
+
+            if (selectedWeatherData.Humidity >= 80)
+            {
+                results.Add($"Humidity was high ({selectedWeatherData.Humidity}% >= {80}%)");
+            }
+
+            if (selectedWeatherData.WindSpeed >= 75)
+            {
+                results.Add($"Wind speed was high ({selectedWeatherData.WindSpeed}km/h >= {75}km/h)");
+            }
+
+            return results;
+        }
+
+        private double ConvertFahrenheitToCelsius(double fahrenheit)
+        {
+            return (fahrenheit - 32) * 5 / 9;
         }
 
         private Dictionary<DateTime?, TelegramData> CorrelateSignalStrengthAndTelegrams(List<FullDataSet> dataSet, List<FullDataSet> badSignals, List<FullDataSet> warningSignals, int signalLimit,
