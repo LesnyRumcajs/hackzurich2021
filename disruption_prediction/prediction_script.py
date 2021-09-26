@@ -88,8 +88,6 @@ def predict_dates(num_prediction,df):
 
 def final_predictions(df):
     num_prediction = 30
-    data = getDataPoints(10)
-    df = pd.DataFrame.from_dict(data)
     forecast_rssi,disrupution_forcasted = predict(num_prediction,df, model_rssi,model_events)
     forecast_dates = predict_dates(num_prediction,df)
     return forecast_rssi , forecast_dates , disrupution_forcasted
