@@ -7,17 +7,18 @@ from influxdb_client import InfluxDBClient, Point, WritePrecision
 from influxdb_client.client.write_api import SYNCHRONOUS
 
 from keras.models import load_model
+import os
+import time
 
-
-token = "----"
-org = "HackZurich"
-bucket = "hackzurich"
+token      = os.environ.get("INFLUXDB_TOKEN")
+org        = os.environ.get("INFLUXDB_ORGANIZATION")
+bucket     = os.environ.get("INFLUXDB_BUCKET")
 client = InfluxDBClient(url="http://localhost:8086", token=token)
 
 measurement = 'a2_rssi'
 field = 'signalStrength'
-model_rssi=load_model('/rssi_forcast.h5')
-model_events=load_model('/model_3_multi.h5')
+model_rssi=load_model('rssi_forcast.h5')
+model_events=load_model('model_3_multi.h5')
 
 def getDataPoints(count):
     query = f'from(bucket: "{bucket}") |> range(start: -{count}s) |> filter(fn: (r) => r._measurement == "{measurement}" and r._field == "{field}")'
@@ -102,3 +103,7 @@ def main():
     df['disruption_event']= pd.Series(disruption_event)
     updateDataPoints(df)
 
+
+while True:
+    main()
+    time.sleep(10)
